@@ -1,0 +1,25 @@
+# Copy to .dev.vars for local testing. In production, add these in
+# Cloudflare: Workers & Pages > probisco > Settings > Variables and Secrets.
+# Never commit real values to Git.
+
+# Razorpay (Dashboard > Account & Settings > API Keys). Use rzp_test_ keys until launch.
+RAZORPAY_KEY_ID=rzp_test_xxxxxxxxxxxx
+RAZORPAY_KEY_SECRET=xxxxxxxxxxxxxxxxxxxx
+# Razorpay (Dashboard > Account & Settings > Webhooks): the secret you type when creating the webhook
+RAZORPAY_WEBHOOK_SECRET=choose-a-long-random-string
+
+# Supabase (Project Settings > API). The service role key is secret: server only.
+SUPABASE_URL=https://xxxxxxxx.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOi...
+
+# Order emails via Resend (optional but recommended)
+RESEND_API_KEY=re_xxxxxxxx
+EMAIL_FROM=ProBisCo <orders@probisco.in>
+ORDER_ALERT_EMAIL=you@probisco.in,probisco30@gmail.com
+SUPPORT_EMAIL=hello@probisco.in
+
+# Instant phone alerts via Telegram (optional)
+TELEGRAM_BOT_TOKEN=
+TELEGRAM_CHAT_ID=
+
+SITE_URL=https://probisco.in

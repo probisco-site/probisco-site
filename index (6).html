@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en-IN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Checkout | ProBisCo</title>
+<meta name="description" content="Complete your ProBisCo order.">
+<link rel="canonical" href="https://probisco.in/checkout/">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#311004">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ProBisCo">
+<meta property="og:title" content="Checkout | ProBisCo">
+<meta property="og:description" content="Complete your ProBisCo order.">
+<meta property="og:url" content="https://probisco.in/checkout/">
+<meta property="og:image" content="https://probisco.in/assets/img/og-image.jpg">
+<meta property="og:locale" content="en_IN">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;1,800&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/styles.css?v=1">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="announce"><span>Launch price ₹180 a jar</span><span>Free delivery on 4 jars or more</span><span class="hide-sm">100% eggless</span></div>
+<header class="site-header">
+<div class="wrap header-inner">
+<button class="icon-btn menu-btn" type="button" data-menu aria-expanded="false" aria-controls="mobile-nav" aria-label="Open menu"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg></button>
+<a class="logo" href="/" aria-label="ProBisCo home"><img src="/assets/img/logo.png" alt="ProBisCo" width="180" height="70"></a>
+<nav class="nav" aria-label="Main"><a href="/chocolate-chip-protein-cookies/">Shop</a><a href="/#story">Our Story</a><a href="/#ingredients">Ingredients</a><a href="/lab-report/">Lab Report</a><a href="/#faq">FAQs</a></nav>
+<div class="header-actions">
+<a class="icon-btn" href="/track-order/" aria-label="Track my order"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6h11v10H2zM13 9h4l4 3v4h-8z"/><circle cx="6.5" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg></a>
+<button class="cart-btn" type="button" data-open-cart data-cart-label aria-label="Open cart"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12l1 12H5L6 8z"/><path d="M9 8V7a3 3 0 0 1 6 0v1"/></svg><span class="hide-xs">Cart</span><span class="cart-count" data-cart-count>0</span></button>
+</div>
+</div>
+<nav class="mobile-nav" id="mobile-nav" aria-label="Mobile"><a href="/chocolate-chip-protein-cookies/">Shop</a><a href="/#story">Our Story</a><a href="/#ingredients">Ingredients</a><a href="/lab-report/">Lab Report</a><a href="/#faq">FAQs</a><a href="/track-order/">Track my order</a><a href="/contact/">Contact</a></nav>
+</header>
+<main id="main">
+<div class="wrap">
+<div class="page-title"><h1>Checkout</h1><p class="lead">Almost there. Where should we send your cookies?</p></div>
+<div class="checkout">
+<form id="checkout-form" novalidate>
+<div class="alert alert-error" id="co-error" role="alert" hidden></div>
+<section class="card" aria-labelledby="h-contact"><h2 id="h-contact">Contact</h2>
+<div class="fields">
+<div class="field"><label for="f-name">Full name</label><input id="f-name" name="name" autocomplete="name" required maxlength="80"></div>
+<div class="field half"><label for="f-phone">Mobile number</label><input id="f-phone" name="phone" type="tel" inputmode="numeric" autocomplete="tel-national" required maxlength="10" placeholder="10-digit number"><span class="hint">For delivery updates and the courier.</span></div>
+<div class="field half"><label for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email" required maxlength="120"><span class="hint">We'll email your order confirmation.</span></div>
+</div></section>
+<section class="card" aria-labelledby="h-addr"><h2 id="h-addr">Delivery address</h2>
+<div class="fields">
+<div class="field"><label for="f-a1">House, flat or building, street</label><input id="f-a1" name="address1" autocomplete="address-line1" required maxlength="160"></div>
+<div class="field"><label for="f-a2">Area, landmark <span class="muted">(optional)</span></label><input id="f-a2" name="address2" autocomplete="address-line2" maxlength="160"></div>
+<div class="field half"><label for="f-pin">Pincode</label><input id="f-pin" name="pincode" inputmode="numeric" autocomplete="postal-code" required maxlength="6" placeholder="6 digits"></div>
+<div class="field half"><label for="f-city">City</label><input id="f-city" name="city" autocomplete="address-level2" required maxlength="60"></div>
+<div class="field"><label for="f-state">State</label><select id="f-state" name="state" autocomplete="address-level1" required><option value="">Select state</option><option>Andaman and Nicobar Islands</option><option>Andhra Pradesh</option><option>Arunachal Pradesh</option><option>Assam</option><option>Bihar</option><option>Chandigarh</option><option>Chhattisgarh</option><option>Dadra and Nagar Haveli and Daman and Diu</option><option>Delhi</option><option>Goa</option><option>Gujarat</option><option>Haryana</option><option>Himachal Pradesh</option><option>Jammu and Kashmir</option><option>Jharkhand</option><option>Karnataka</option><option>Kerala</option><option>Ladakh</option><option>Lakshadweep</option><option>Madhya Pradesh</option><option>Maharashtra</option><option>Manipur</option><option>Meghalaya</option><option>Mizoram</option><option>Nagaland</option><option>Odisha</option><option>Puducherry</option><option>Punjab</option><option>Rajasthan</option><option>Sikkim</option><option>Tamil Nadu</option><option>Telangana</option><option>Tripura</option><option>Uttar Pradesh</option><option>Uttarakhand</option><option>West Bengal</option></select></div>
+<div class="field"><label for="f-notes">Delivery note <span class="muted">(optional)</span></label><textarea id="f-notes" name="notes" maxlength="300"></textarea></div>
+</div></section>
+<section class="card" aria-labelledby="h-pay"><h2 id="h-pay">Payment</h2>
+<p class="muted" style="font-size:14px">You'll pay securely through Razorpay with UPI, debit or credit card, or netbanking. Cash on delivery isn't available yet.</p>
+<label class="check-line mt-16"><input type="checkbox" id="f-terms" required><span>I agree to the <a href="/terms/" target="_blank">terms</a>, <a href="/shipping-policy/" target="_blank">shipping policy</a> and <a href="/refund-policy/" target="_blank">refund policy</a>, including that broken cookies are not eligible for return.</span></label>
+<label class="check-line mt-8"><input type="checkbox" id="f-optin" name="marketing"><span>Send me launch offers and new flavours by email.</span></label>
+<button class="btn btn-dark btn-block mt-24" type="submit" id="pay-btn"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 11h12v9H6z"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span data-pay-label>Pay securely</span></button>
+<p class="muted center mt-8" style="font-size:12px">Prices include all taxes.</p>
+</section>
+</form>
+<aside aria-labelledby="h-sum">
+<div class="card" id="co-summary">
+<h2 id="h-sum">Order summary</h2>
+<div class="cart-line"><img src="/assets/img/jar-thumb.webp" alt="" width="76" height="76"><div><b>Chocolate chip protein cookies</b><div class="muted" style="font-size:13px">6 cookies · 30g protein per jar · ₹180 each</div></div></div>
+<div class="stepper mt-16" style="justify-content:center" role="group" aria-label="Number of jars">
+<button type="button" class="step-btn" data-co-step="-1" aria-label="Remove one jar"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/></svg></button>
+<div class="step-val" aria-live="polite"><span class="n" data-co-qty>1</span><span class="u" data-co-unit>jar</span></div>
+<button type="button" class="step-btn plus" data-co-step="1" aria-label="Add one jar"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5v14"/></svg></button>
+</div>
+<div class="mt-16"><p class="ship-hint" data-co-hint></p><div class="ship-bar" aria-hidden="true"><span data-co-bar></span></div></div>
+<div class="sum-rows mt-16">
+<div><span data-co-line>1 × ₹180</span><span data-co-sub>₹180</span></div>
+<div><span>Delivery</span><span data-co-del>₹80</span></div>
+<div class="muted"><span>You save on MRP</span><span data-co-save>₹69</span></div>
+<div class="total"><span>Total</span><span data-co-total>₹260</span></div>
+</div>
+</div>
+<div class="empty-cart card" id="co-empty" hidden><p>Your cart is empty.</p><a class="btn btn-dark" href="/chocolate-chip-protein-cookies/">Shop the jar</a></div>
+</aside>
+</div>
+</div>
+</main>
+<footer class="site-footer">
+<div class="wrap foot-grid">
+<div class="foot-brand">
+<img src="/assets/img/logo-white.png" alt="ProBisCo" width="180" height="70">
+<p style="font-size:15px;color:var(--on-dark);font-weight:500">Protein that doesn't take itself too seriously.</p>
+<div class="socials">
+<a href="https://www.instagram.com/probisco_/" aria-label="ProBisCo on Instagram" rel="noopener" target="_blank"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="5"/><circle cx="12" cy="12" r="3.5"/><path d="M16.5 7.5h.01"/></svg></a>
+<a href="https://wa.me/918800305043" aria-label="Chat with ProBisCo on WhatsApp" rel="noopener" target="_blank"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.4-4.2A8 8 0 1 1 8.2 18.6L4 20z"/></svg></a>
+<a href="mailto:hello@probisco.in" aria-label="Email ProBisCo"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></a>
+</div>
+</div>
+<div class="foot-col"><h2>Shop</h2>
+<a href="/chocolate-chip-protein-cookies/">Chocolate chip</a>
+<a href="/#ingredients">Ingredients</a>
+<a href="/lab-report/">Lab report</a>
+<a href="/#story">Our story</a>
+<a href="/track-order/">Track my order</a>
+</div>
+<div class="foot-col"><h2>Policies</h2>
+<a href="/shipping-policy/">Shipping</a>
+<a href="/refund-policy/">Refunds and cancellations</a>
+<a href="/privacy-policy/">Privacy</a>
+<a href="/terms/">Terms of use</a>
+<a href="/contact/">Contact us</a>
+</div>
+<div class="foot-news">
+<form class="newsletter" data-newsletter novalidate>
+<label for="nl-email">Stay in the loop</label>
+<p style="font-size:13px">Launch offers and new flavours, a few times a month.</p>
+<div class="row"><input id="nl-email" type="email" name="email" autocomplete="email" placeholder="you@example.com" required>
+<button class="btn btn-honey" type="submit">Subscribe</button></div>
+<p class="form-msg" role="status" aria-live="polite"></p>
+</form>
+</div>
+</div>
+<div class="wrap foot-legal">
+<div><strong>Marketed and packaged by</strong> Eykam Wellness Pvt Ltd, 2nd floor, CIIE, Nano Building, Jamia Hamdard University, New Delhi 110062</div>
+<div><strong>Manufactured by</strong> RB Products, B-25, Sec 2 Bawana, DSIIDC, New Delhi 110039 · FSSAI Lic. No. 13324999000619</div>
+<div class="foot-bottom"><span>© <span data-year>2026</span> ProBisCo. A brand of Eykam Wellness Pvt Ltd.</span><span>hello@probisco.in · +91 88003 05043</span></div>
+</div>
+</footer>
+<a class="wa-float" href="https://wa.me/918800305043" target="_blank" rel="noopener" aria-label="Chat with us on WhatsApp"><svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.4-4.2A8 8 0 1 1 8.2 18.6L4 20z"/></svg></a>
+<script src="/assets/js/main.js?v=1" defer></script>
+<script src="/assets/js/checkout.js?v=1" defer></script>
+</body>
+</html>

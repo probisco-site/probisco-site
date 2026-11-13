@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /checkout/
+Disallow: /order-confirmed/
+Disallow: /track-order/
+Disallow: /api/
+
+Sitemap: https://probisco.in/sitemap.xml
