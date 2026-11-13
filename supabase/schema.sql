@@ -57,7 +57,7 @@ create table if not exists public.newsletter (
 );
 
 -- Keep updated_at fresh, and stamp shipped/delivered times when you change the status.
-create or replace function public.orders_touch() returns trigger language plpgsql as $$
+create or replace function public.orders_touch() returns trigger language plpgsql set search_path = '' as $$
 begin
   new.updated_at := now();
   if new.status = 'shipped'   and old.status is distinct from 'shipped'   and new.shipped_at   is null then new.shipped_at   := now(); end if;

@@ -59,13 +59,13 @@ Razorpay also emails you on every successful payment.
 
 Easiest route, via GitHub:
 1. Create a private GitHub repository, for example `probisco-site`, and upload this whole folder. Don't upload a `.dev.vars` file.
-2. In Cloudflare, open **Workers & Pages > Create > Pages > Connect to Git**, then pick the repository.
+2. In Cloudflare, open **Workers & Pages > Create application**, click **Looking to deploy Pages? Get started** at the bottom, then **Import an existing Git repository**, and pick the repository. (Don't create a Worker: it won't build this site.)
 3. Build settings: Framework preset **None**, Build command **(leave empty)**, Build output directory **`public`**. Click **Save and Deploy**.
 4. Open **Settings > Variables and Secrets** and add each value from `.dev.vars.example` as a **Secret**, for Production. Start with the Razorpay **test** keys. Then click **Deployments > Retry deployment** so they take effect.
 
 Your site is now live at `probisco.pages.dev`. Every change you push to GitHub redeploys automatically.
 
-(Without GitHub: install Node.js, then run `npx wrangler pages deploy` inside this folder.)
+(Without GitHub: install Node.js, then run `npx wrangler pages deploy public --project-name probisco-site` inside this folder.)
 
 ## Step 4. Connect probisco.in
 
@@ -120,7 +120,7 @@ Unpaid orders (abandoned at payment) stay with status `pending`. They're useful 
 ```
 npm install -g wrangler
 cp .dev.vars.example .dev.vars   # fill in test values
-wrangler pages dev
+wrangler pages dev public --compatibility-date=2024-11-01
 ```
 
 Then open http://localhost:8788.
