@@ -57,7 +57,15 @@
 </div>
 <script>
 (function(){var o=new URLSearchParams(location.search).get('o')||'';if(/^PB[0-9A-Z-]{4,20}$/.test(o)){document.getElementById('ok-order').textContent=o;document.getElementById('ok-track').href='/track-order/?o='+encodeURIComponent(o);}
-try{localStorage.setItem('pb_cart_qty','0');}catch(e){}})();
+try{localStorage.setItem('pb_cart_qty','0');}catch(e){}
+if(new URLSearchParams(location.search).get('wa')==='1'){var w='';try{w=sessionStorage.getItem('pb_wa_msg')||'';}catch(e){}
+if(!/^https:\/\/wa\.me\//.test(w))w='https://wa.me/918800305043?text='+encodeURIComponent('Hi ProBisCo! I placed order '+o+' on probisco.in. Please send me the payment link.');
+document.querySelector('h1').textContent='Order received!';
+document.querySelector('.page-title .lead').textContent='One last step: send it to us on WhatsApp.';
+var card=document.querySelector('.card');var ps=card.querySelectorAll('p');ps[2].textContent='Tap the button below to send your order to us on WhatsApp. We\u2019ll reply with a UPI payment link, and we pack and dispatch within 1 to 2 business days of payment.';
+var a=document.createElement('a');a.className='btn btn-dark';a.href=w;a.target='_blank';a.rel='noopener';a.textContent='Send order on WhatsApp';a.style.background='#1FA855';
+var row=card.querySelector('.cta-row');row.insertBefore(a,row.firstChild);var t=document.getElementById('ok-track');if(t)t.remove();}
+})();
 </script>
 </main>
 <footer class="site-footer">

@@ -5,7 +5,8 @@ import { sb } from '../../lib/supabase.js';
 
 export async function onRequestPost({ request, env }) {
   try {
-    requireEnv(env, ['RAZORPAY_KEY_ID', 'RAZORPAY_KEY_SECRET', 'SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY']);
+    requireEnv(env, ['SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY']);
+    const paymentsOn = Boolean(env.RAZORPAY_KEY_ID && env.RAZORPAY_KEY_SECRET);
     if (!sameOrigin(request)) return json({ error: 'Forbidden' }, 403);
 
     const body = await readJson(request);
@@ -37,6 +38,7 @@ export async function onRequestPost({ request, env }) {
           pincode: data.pincode,
           notes: data.notes || null,
           marketing_opt_in: data.marketing,
+          paid_via: paymentsOn ? null : 'whatsapp',
         }, 'return=representation');
         order = rows[0];
       } catch (e) {
@@ -45,6 +47,15 @@ export async function onRequestPost({ request, env }) {
     }
     if (!order) throw new Error('Could not create an order number');
 
+    if (data.marketing) {
+      sb(env, 'POST', 'newsletter?on_conflict=email', { email: data.email, source: 'checkout' }, 'resolution=ignore-duplicates,return=minimal').catch(() => {});
+    }
+
+    // Online payment not set up yet: the order is saved, and confirmed on WhatsApp.
+    if (!paymentsOn) {
+      return json({ mode: 'whatsapp', orderNumber: order.order_number, amount: p.total * 100, qty: p.qty, delivery: p.delivery });
+    }
+
     const rzp = await createRazorpayOrder(env, {
       amountPaise: p.total * 100,
       receipt: order.order_number,
@@ -52,11 +63,8 @@ export async function onRequestPost({ request, env }) {
     });
     await sb(env, 'PATCH', `orders?id=eq.${order.id}`, { razorpay_order_id: rzp.id }, 'return=minimal');
 
-    if (data.marketing) {
-      sb(env, 'POST', 'newsletter?on_conflict=email', { email: data.email, source: 'checkout' }, 'resolution=ignore-duplicates,return=minimal').catch(() => {});
-    }
-
     return json({
+      mode: 'razorpay',
       orderNumber: order.order_number,
       razorpayOrderId: rzp.id,
       amount: p.total * 100,

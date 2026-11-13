@@ -11,6 +11,8 @@
   var summary = document.getElementById('co-summary');
   var empty = document.getElementById('co-empty');
   var busy = false;
+  var paymentsOn = true; // switched off below if Razorpay isn't set up yet
+  var WA_NUMBER = '918800305043';
 
   function $(s) { return document.querySelector(s); }
   function render() {
@@ -35,8 +37,17 @@
     $('[data-co-bar]').style.width = Math.min(100, p.qty / PB.config.freeFrom * 100) + '%';
     document.querySelector('[data-co-step="-1"]').disabled = busy || p.qty <= 1;
     document.querySelector('[data-co-step="1"]').disabled = busy || p.qty >= PB.config.max;
-    payLabel.textContent = 'Pay ' + PB.rs(p.total) + ' securely';
+    payLabel.textContent = paymentsOn ? 'Pay ' + PB.rs(p.total) + ' securely' : 'Place order · ' + PB.rs(p.total);
   }
+
+  fetch('/api/config').then(function (r) { return r.json(); }).then(function (c) {
+    if (c && c.payments === false) {
+      paymentsOn = false;
+      var note = document.querySelector('#h-pay + p');
+      if (note) note.textContent = 'Online payment is coming soon. Place your order now and we\'ll confirm it with you on WhatsApp, with a UPI payment link. We ship once payment is received.';
+      render();
+    }
+  }).catch(function () {});
   document.querySelectorAll('[data-co-step]').forEach(function (b) {
     b.addEventListener('click', function () { PB.setCart(Math.max(1, PB.getCart() + parseInt(b.getAttribute('data-co-step'), 10))); });
   });
@@ -125,10 +136,12 @@
       city: f.city.value.trim(), state: f.state.value, pincode: f.pincode.value.trim(),
       notes: f.notes.value.trim(), marketing: document.getElementById('f-optin').checked
     };
-    setBusy(true, 'Preparing payment…');
-    Promise.all([post('/api/create-order', payload), loadRazorpay()])
+    setBusy(true, paymentsOn ? 'Preparing payment…' : 'Placing order…');
+    Promise.all([post('/api/create-order', payload), paymentsOn ? loadRazorpay() : Promise.resolve()])
       .then(function (res) {
         var o = res[0];
+        if (o.mode === 'whatsapp') return whatsappOrder(o, payload);
+        if (!window.Razorpay) return loadRazorpay().then(function () { location.reload(); });
         if (window.gtag) { try { window.gtag('event', 'begin_checkout', { currency: 'INR', value: o.amount / 100 }); } catch (x) {} }
         if (window.fbq) { try { window.fbq('track', 'InitiateCheckout', { currency: 'INR', value: o.amount / 100 }); } catch (x) {} }
         var rzp = new window.Razorpay({
@@ -174,6 +187,25 @@
         showError(err.details && err.details.length ? err.details : err.message);
       });
   });
+
+  function whatsappOrder(o, d) {
+    var total = PB.rs(o.amount / 100);
+    var msg = [
+      'Hi ProBisCo! I just placed order ' + o.orderNumber + ' on probisco.in.',
+      o.qty + ' ' + (o.qty === 1 ? 'jar' : 'jars') + ' of chocolate chip protein cookies',
+      'Total: ' + total + (o.delivery ? ' (incl. ' + PB.rs(o.delivery) + ' delivery)' : ' (free delivery)'),
+      '',
+      'Name: ' + d.name,
+      'Phone: ' + d.phone,
+      'Address: ' + [d.address1, d.address2, d.city, d.state + ' ' + d.pincode].filter(Boolean).join(', '),
+      '',
+      'Please send me the payment link.'
+    ].join('\n');
+    try { sessionStorage.setItem('pb_wa_msg', 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(msg)); } catch (x) {}
+    PB.clearCart();
+    try { sessionStorage.removeItem('pb_checkout'); } catch (x) {}
+    location.href = '/order-confirmed/?o=' + encodeURIComponent(o.orderNumber) + '&wa=1';
+  }
 
   function finish(orderNumber, amount) {
     if (window.gtag) { try { window.gtag('event', 'purchase', { transaction_id: orderNumber, currency: 'INR', value: amount / 100 }); } catch (x) {} }
