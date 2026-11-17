@@ -18,9 +18,7 @@ Search all files for these and replace them:
 
 | Placeholder | Where | Replace with |
 |---|---|---|
-| `[GRIEVANCE OFFICER NAME]` | Contact, privacy policy | Name of the person handling complaints (legally required) |
-| `[GSTIN]` | Contact, terms | Eykam Wellness GST number |
-| `hello@probisco.in` | Every page | The professional email you create |
+| `probisco30@gmail.com` | Every page | Swap for a domain email (e.g. hello@probisco.in) later if you set one up |
 | `probisco.in` | Every page, sitemap, robots.txt | Only if your domain ends up different |
 
 Also check:
