@@ -67,11 +67,19 @@ export async function onRequestPost({ request, env }) {
       return json({ mode: 'whatsapp', orderNumber: order.order_number, amount: p.total * 100, qty: p.qty, delivery: p.delivery, discount: p.discount, coupon: p.couponCode });
     }
 
-    const rzp = await createRazorpayOrder(env, {
-      amountPaise: p.total * 100,
-      receipt: order.order_number,
-      notes: { order_number: order.order_number, jars: String(p.qty), phone: data.phone, coupon: p.couponCode || '' },
-    });
+    let rzp;
+    try {
+      rzp = await createRazorpayOrder(env, {
+        amountPaise: p.total * 100,
+        receipt: order.order_number,
+        notes: { order_number: order.order_number, jars: String(p.qty), phone: data.phone, coupon: p.couponCode || '' },
+      });
+    } catch (e) {
+      // Keep Razorpay's reason on the order so it can be checked later (no keys are stored).
+      const keyKind = String(env.RAZORPAY_KEY_ID).startsWith('rzp_live_') ? 'live' : String(env.RAZORPAY_KEY_ID).startsWith('rzp_test_') ? 'test' : 'unrecognised';
+      await sb(env, 'PATCH', `orders?id=eq.${order.id}`, { internal_notes: `${e.message} (key id type: ${keyKind}, length ${String(env.RAZORPAY_KEY_ID).trim().length}${String(env.RAZORPAY_KEY_ID) !== String(env.RAZORPAY_KEY_ID).trim() || String(env.RAZORPAY_KEY_SECRET) !== String(env.RAZORPAY_KEY_SECRET).trim() ? ', has extra spaces' : ''})` }, 'return=minimal').catch(() => {});
+      throw e;
+    }
     await sb(env, 'PATCH', `orders?id=eq.${order.id}`, { razorpay_order_id: rzp.id }, 'return=minimal');
 
     return json({
