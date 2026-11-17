@@ -4,9 +4,9 @@
 import { json } from '../../lib/http.js';
 import { sb, eq } from '../../lib/supabase.js';
 import { safeEqual } from '../../lib/crypto.js';
-import { mapCourierStatus } from '../../lib/shiprocket.js';
+import { mapCourierStatus, stageFor } from '../../lib/shiprocket.js';
 import { notifyShipped, notifyDelivered } from '../../lib/notify.js';
-import { hqOrderStatus } from '../../lib/hq.js';
+import { hqEvent } from '../../lib/hq.js';
 
 const RANK = { pending: -1, paid: 0, packed: 1, shipped: 2, delivered: 3 };
 
@@ -48,13 +48,22 @@ export async function onRequestPost({ request, env }) {
     const next = mapCourierStatus(label);
     const moveForward = next && !['cancelled', 'refunded'].includes(order.status) && RANK[next] > (RANK[order.status] ?? -1);
     if (moveForward) patch.status = next;
+    const stage = stageFor(label);
+    if ((stage === 'returned' || stage === 'cancelled') && !['cancelled', 'refunded'].includes(order.status)) {
+      patch.status = 'cancelled'; patch.cancelled_at = new Date().toISOString();
+    }
 
     const rows = await sb(env, 'PATCH', `orders?id=${eq(order.id)}`, patch, 'return=representation');
     const updated = rows?.[0] || { ...order, ...patch };
 
     if (moveForward && next === 'shipped') await notifyShipped(env, updated).catch((e) => console.error(e));
     if (moveForward && next === 'delivered') await notifyDelivered(env, updated).catch((e) => console.error(e));
-    if (moveForward && (next === 'shipped' || next === 'delivered')) await hqOrderStatus(env, updated, next);
+    // Every courier update goes to HQ's timeline for this order.
+    const lastScan = Array.isArray(p.scans) && p.scans.length ? p.scans[p.scans.length - 1] : null;
+    await hqEvent(env, updated, stage, {
+      label: String(label || '').slice(0, 120) || null,
+      location: lastScan?.location ? String(lastScan.location).slice(0, 120) : null,
+    });
     return json({ ok: true, matched: true, status: updated.status });
   } catch (e) {
     console.error('courier-update', e);
