@@ -78,7 +78,9 @@ button, input, select, textarea { font: inherit; color: inherit; }
 @media (max-width: 600px) { .announce .hide-sm { display: none; } }
 .site-header { position: sticky; top: 0; z-index: 40; background: var(--cream); border-bottom: 1px solid var(--sand-line); }
 .header-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 66px; }
-.logo img { height: 34px; width: auto; }
+.logo { flex: none; display: block; line-height: 0; }
+.logo img { height: 34px; width: auto; max-width: none; }
+@media (max-width: 400px) { .logo img { height: 28px; } }
 .nav { display: none; gap: 4px; }
 .nav a { text-decoration: none; font-weight: 500; font-size: 15px; padding: 10px 14px; border-radius: 10px; }
 .nav a:hover { background: var(--sand); color: var(--ink); }
@@ -290,7 +292,7 @@ details.faq p { margin-top: 8px; color: var(--ink-soft); font-size: 15px; }
 .foot-grid { display: flex; flex-wrap: wrap; gap: 36px 48px; padding-top: 56px; padding-bottom: 32px; }
 .foot-grid > div { min-width: 0; }
 .foot-brand { flex: 1.4 1 260px; display: flex; flex-direction: column; gap: 14px; align-items: flex-start; }
-.foot-brand img { height: 34px; width: auto; }
+.foot-brand img { height: 34px; width: auto; max-width: none; flex: none; }
 .foot-col { flex: 1 1 140px; display: flex; flex-direction: column; }
 .foot-col h2, .newsletter label { font-size: 13px; font-weight: 700; color: var(--on-dark); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 6px; }
 .foot-col a { padding: 7px 0; }
