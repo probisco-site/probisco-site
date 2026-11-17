@@ -4,7 +4,7 @@
   'use strict';
 
   var PB = window.PB = window.PB || {};
-  PB.config = { price: 180, mrp: 249, delivery: 80, freeFrom: 4, max: 24, cookiesPerJar: 6, proteinPerJar: 30 };
+  PB.config = { price: 219, mrp: 249, delivery: 80, freeFrom: 4, max: 24, cookiesPerJar: 6, proteinPerJar: 30 };
   var C = PB.config;
   var KEY = 'pb_cart_qty';
 
@@ -14,13 +14,52 @@
   PB.price = function (qty) {
     qty = clamp(qty);
     var subtotal = qty * C.price;
+    var cp = PB.getCoupon();
+    var perJar = cp ? Math.min(cp.perJar, C.price) : 0;
+    var discount = qty * perJar;
     var delivery = qty === 0 || qty >= C.freeFrom ? 0 : C.delivery;
     return {
-      qty: qty, subtotal: subtotal, delivery: delivery, total: subtotal + delivery,
-      savings: qty * (C.mrp - C.price), cookies: qty * C.cookiesPerJar, protein: qty * C.proteinPerJar
+      qty: qty, subtotal: subtotal, discount: discount, coupon: cp ? cp.code : null, delivery: delivery,
+      total: subtotal - discount + delivery,
+      savings: qty * (C.mrp - C.price) + discount, cookies: qty * C.cookiesPerJar, protein: qty * C.proteinPerJar
     };
   };
   PB.rs = rs;
+
+  // ---- Creator codes and campaign tags ----
+  // A code arrives by link (probisco.in/?code=NAME20) or is typed at checkout. It is kept
+  // for 30 days on this device. The server re-checks it on every order.
+  var CKEY = 'pb_coupon', UKEY = 'pb_utm', TTL = 30 * 864e5;
+  function readJSON(k) { try { var v = JSON.parse(localStorage.getItem(k) || 'null'); return v && v.at && Date.now() - v.at < TTL ? v : null; } catch (e) { return null; } }
+  function writeJSON(k, v) { try { if (v) localStorage.setItem(k, JSON.stringify(v)); else localStorage.removeItem(k); } catch (e) {} }
+  PB.getCoupon = function () { var c = readJSON(CKEY); return c && c.code ? c : null; };
+  PB.setCoupon = function (c) {
+    writeJSON(CKEY, c ? { code: c.code, perJar: Number(c.discountPerJar) || 0, at: Date.now() } : null);
+    renderCartBits();
+    document.dispatchEvent(new CustomEvent('pb:cart', { detail: { qty: PB.getCart() } }));
+  };
+  PB.checkCoupon = function (code) {
+    return fetch('/api/coupon?code=' + encodeURIComponent(code)).then(function (r) {
+      return r.json().catch(function () { return {}; }).then(function (j) {
+        if (!r.ok) throw new Error(j.error || 'This code isn\'t valid or has expired.');
+        return j;
+      });
+    });
+  };
+  PB.getUtm = function () { var u = readJSON(UKEY); return u ? { source: u.source, medium: u.medium, campaign: u.campaign } : null; };
+  (function captureFromUrl() {
+    var q = new URLSearchParams(location.search);
+    if (q.get('utm_source')) writeJSON(UKEY, { source: q.get('utm_source').slice(0, 60), medium: (q.get('utm_medium') || '').slice(0, 60), campaign: (q.get('utm_campaign') || '').slice(0, 80), at: Date.now() });
+    var code = q.get('code') || q.get('coupon');
+    if (code) {
+      PB.checkCoupon(code).then(function (c) { PB.setCoupon(c); PB._couponNote = c.code; showCouponNote(); }).catch(function () {});
+    }
+  })();
+  function showCouponNote() {
+    var c = PB.getCoupon(); if (!c || !document.body) return;
+    var span = document.querySelector('.announce span');
+    if (span) span.textContent = 'Code ' + c.code + ' applied: ' + rs(C.price - c.perJar) + ' a jar';
+  }
 
   // ---- Cart storage (single product for now) ----
   PB.getCart = function () {
@@ -110,6 +149,7 @@
       '<div><div class="ship-hint">' + shipHint(p.qty) + '</div><div class="ship-bar" aria-hidden="true"><span style="width:' + Math.min(100, p.qty / C.freeFrom * 100) + '%"></span></div></div>';
     foot.innerHTML =
       '<div class="sum-rows"><div><span>' + p.qty + ' × ' + rs(C.price) + '</span><span>' + rs(p.subtotal) + '</span></div>' +
+      (p.discount ? '<div><span>Code ' + p.coupon + '</span><span style="color:#8A4A1F;font-weight:700">−' + rs(p.discount) + '</span></div>' : '') +
       '<div><span>Delivery</span><span>' + (p.delivery ? rs(p.delivery) : '<b style="color:#8A4A1F">Free</b>') + '</span></div>' +
       '<div class="total"><span>Total</span><span>' + rs(p.total) + '</span></div></div>' +
       '<a class="btn btn-dark btn-block" href="/checkout/">Checkout ' + ICON.arrow + '</a>' +
@@ -153,6 +193,7 @@
       document.querySelectorAll('[data-sticky-total]').forEach(function (el) { el.textContent = rs(p.total); });
       document.querySelectorAll('[data-sticky-note]').forEach(function (el) { el.textContent = p.delivery ? 'incl. ' + rs(p.delivery) + ' delivery' : 'free delivery'; });
     }
+    document.addEventListener('pb:cart', render); // e.g. a creator code was applied
     root.addEventListener('click', function (e) {
       if (e.target.closest('[data-dec]')) { qty = Math.max(1, qty - 1); render(); }
       else if (e.target.closest('[data-inc]')) { qty = Math.min(C.max, qty + 1); render(); }
@@ -234,6 +275,7 @@
   }
 
   document.addEventListener('DOMContentLoaded', function () {
+    showCouponNote();
     buildDrawer();
     renderCartBits();
     document.querySelectorAll('[data-open-cart]').forEach(function (b) { b.addEventListener('click', openDrawer); });

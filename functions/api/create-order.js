@@ -2,6 +2,7 @@ import { json, readJson, requireEnv, sameOrigin } from '../../lib/http.js';
 import { validateCheckout, priceOrder, newOrderNumber, PRODUCT } from '../../lib/shop.js';
 import { createRazorpayOrder } from '../../lib/razorpay.js';
 import { sb } from '../../lib/supabase.js';
+import { findCoupon } from '../../lib/coupons.js';
 
 export async function onRequestPost({ request, env }) {
   try {
@@ -13,7 +14,12 @@ export async function onRequestPost({ request, env }) {
     const { data, errors } = validateCheckout(body);
     if (errors) return json({ error: 'Please check your details.', details: errors }, 400);
 
-    const p = priceOrder(data.qty); // never trust prices from the browser
+    let coupon = null;
+    if (data.couponGiven) {
+      coupon = await findCoupon(env, data.coupon);
+      if (!coupon) return json({ error: "That coupon code isn't valid or has expired. Remove it or try another." , couponInvalid: true }, 400);
+    }
+    const p = priceOrder(data.qty, coupon); // never trust prices from the browser
 
     // Insert the order first (status: pending), retrying if the order number clashes.
     let order;
@@ -26,6 +32,11 @@ export async function onRequestPost({ request, env }) {
           quantity: p.qty,
           unit_price: p.unitPrice,
           subtotal: p.subtotal,
+          discount: p.discount,
+          coupon_code: p.couponCode,
+          utm_source: data.utmSource,
+          utm_medium: data.utmMedium,
+          utm_campaign: data.utmCampaign,
           delivery_fee: p.delivery,
           total: p.total,
           customer_name: data.name,
@@ -53,13 +64,13 @@ export async function onRequestPost({ request, env }) {
 
     // Online payment not set up yet: the order is saved, and confirmed on WhatsApp.
     if (!paymentsOn) {
-      return json({ mode: 'whatsapp', orderNumber: order.order_number, amount: p.total * 100, qty: p.qty, delivery: p.delivery });
+      return json({ mode: 'whatsapp', orderNumber: order.order_number, amount: p.total * 100, qty: p.qty, delivery: p.delivery, discount: p.discount, coupon: p.couponCode });
     }
 
     const rzp = await createRazorpayOrder(env, {
       amountPaise: p.total * 100,
       receipt: order.order_number,
-      notes: { order_number: order.order_number, jars: String(p.qty), phone: data.phone },
+      notes: { order_number: order.order_number, jars: String(p.qty), phone: data.phone, coupon: p.couponCode || '' },
     });
     await sb(env, 'PATCH', `orders?id=eq.${order.id}`, { razorpay_order_id: rzp.id }, 'return=minimal');
 

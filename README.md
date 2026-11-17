@@ -8,7 +8,7 @@ This folder is the complete ProBisCo store for **probisco.in**:
 
 Prices live in two places. Change both if prices change:
 `lib/shop.js` (what customers are charged) and `public/assets/js/main.js` (what the site displays).
-Today: ₹180 a jar (MRP ₹249), ₹80 delivery on 1 to 3 jars, free from 4 jars, maximum 24 jars per order.
+Today: ₹219 a jar (MRP ₹249), ₹20 off per jar with a creator code (₹199), ₹80 delivery on 1 to 3 jars, free from 4 jars, maximum 24 jars per order.
 
 ---
 
@@ -94,11 +94,46 @@ Your site is now live at `probisco.pages.dev`. Every change you push to GitHub r
 3. Swap the three Razorpay values for **live** keys in Cloudflare, then redeploy.
 4. Place one real order yourself, ship it, then refund it from Razorpay.
 
+## Shiprocket (automatic)
+
+Every paid order is sent to Shiprocket automatically and appears under **Orders > New**, ready to ship. Your order alert email says whether it worked.
+
+Setup:
+1. In Shiprocket, open **Settings > API > Configure > Create an API user**. Use an email that is *different* from your main Shiprocket login, and set a password.
+2. Open **Settings > Pickup addresses** and copy the exact nickname of your pickup address (for example `Primary` or `Home`).
+3. In Cloudflare Pages > **Settings > Variables and Secrets**, add these as secrets:
+   - `SHIPROCKET_EMAIL`: the API user's email
+   - `SHIPROCKET_PASSWORD`: the API user's password
+   - `SHIPROCKET_PICKUP_LOCATION`: the pickup nickname, exactly as spelled
+   - `SHIPROCKET_WEBHOOK_TOKEN`: any long random text
+   - Optional: `SHIPROCKET_WEIGHT_PER_JAR_KG` (default `0.3`) and `SHIPROCKET_BOX_CM` (default `20x15x15`)
+4. In Shiprocket, open **Settings > API > Webhooks**: URL `https://probisco.in/api/courier-update`, token = the same `SHIPROCKET_WEBHOOK_TOKEN`. Turn it on.
+5. Retry the latest deployment in Cloudflare.
+6. Keep Cloudflare **Bot Fight Mode** off (Security > Bots), or Shiprocket's updates can be blocked.
+
 ## Daily operations: shipping an order
 
-1. Open **orders_to_ship** in Supabase, or your CRM. Book the shipment in Shiprocket with the address and phone number.
-2. In the `orders` table, set `status` to `packed`, then to `shipped`. Fill in `courier` and `tracking_url` (the Shiprocket tracking link). The shipped date is stamped automatically.
-3. When it's delivered, set `status` to `delivered`.
+1. In Shiprocket, open **Orders > New**, check the weight and box size, and click **Ship Now** to pick a courier. Then schedule the pickup.
+2. From then on everything updates by itself: the order status moves to packed, shipped and delivered, the courier and tracking link are filled in, the customer gets a "shipped" email with the tracking link and a "delivered" email asking for feedback, and the **Track my order** page shows the progress.
+3. If an order didn't reach Shiprocket (the alert email says so, and `shiprocket_error` in the orders table says why), add it by hand in Shiprocket using the same order number. Updates still flow back.
+
+WhatsApp-mode orders (placed while online payment is off) are not sent to Shiprocket, because they aren't paid yet. Add them in Shiprocket once the customer has paid, using the same order number, and set `status` to `paid` in Supabase.
+
+## Creator codes and sales tracking
+
+Each influencer gets their own code. It takes ₹20 off every jar (₹199 instead of ₹219).
+
+**Add a code:** Supabase > Table Editor > `coupons` > Insert row. Fill in `code` (capitals, numbers, `-` or `_`, 3 to 24 characters, e.g. `RIYA20`) and `owner_name`. `discount_per_jar` defaults to 20. Optional: `expires_at`, `owner_contact`, `notes`.
+
+**Share it:** customers can type the code at checkout, or use a link that applies it automatically: `https://probisco.in/?code=RIYA20`. The code is remembered on their phone for 30 days.
+
+**Ads:** tag ad links with UTM tags, e.g. `https://probisco.in/?utm_source=instagram&utm_medium=paid&utm_campaign=launch`.
+
+**See the numbers:** in Supabase, open the views
+- `coupon_sales`: orders, jars, revenue and discount given per code; and
+- `sales_by_source`: revenue split by code, ad campaign and direct website orders.
+
+A code used together with an ad link counts towards the code. To stop a code, set `active` to false. Switch off `TEST20` once you've finished testing.
 
 Customers see these updates on the **Track my order** page. For cancellations, refund in Razorpay first, then set the status to `refunded`.
 

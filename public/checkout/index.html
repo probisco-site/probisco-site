@@ -27,7 +27,7 @@
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
-<div class="announce"><span>Launch price ₹180 a jar</span><span>Free delivery on 4 jars or more</span><span class="hide-sm">100% eggless</span></div>
+<div class="announce"><span>₹219 a jar · ₹199 with a creator code</span><span>Free delivery on 4 jars or more</span><span class="hide-sm">100% eggless</span></div>
 <header class="site-header">
 <div class="wrap header-inner">
 <button class="icon-btn menu-btn" type="button" data-menu aria-expanded="false" aria-controls="mobile-nav" aria-label="Open menu"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg></button>
@@ -72,7 +72,7 @@
 <aside aria-labelledby="h-sum">
 <div class="card" id="co-summary">
 <h2 id="h-sum">Order summary</h2>
-<div class="cart-line"><img src="/assets/img/jar-thumb.webp" alt="" width="76" height="76"><div><b>Chocolate chip protein cookies</b><div class="muted" style="font-size:13px">6 cookies · 30g protein per jar · ₹180 each</div></div></div>
+<div class="cart-line"><img src="/assets/img/jar-thumb.webp" alt="" width="76" height="76"><div><b>Chocolate chip protein cookies</b><div class="muted" style="font-size:13px">6 cookies · 30g protein per jar · ₹219 each</div></div></div>
 <div class="stepper mt-16" style="justify-content:center" role="group" aria-label="Number of jars">
 <button type="button" class="step-btn" data-co-step="-1" aria-label="Remove one jar"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/></svg></button>
 <div class="step-val" aria-live="polite"><span class="n" data-co-qty>1</span><span class="u" data-co-unit>jar</span></div>
@@ -80,11 +80,20 @@
 </div>
 <div class="mt-16"><p class="ship-hint" data-co-hint></p><div class="ship-bar" aria-hidden="true"><span data-co-bar></span></div></div>
 <div class="sum-rows mt-16">
-<div><span data-co-line>1 × ₹180</span><span data-co-sub>₹180</span></div>
+<div><span data-co-line>1 × ₹219</span><span data-co-sub>₹219</span></div>
+<div data-co-disc-row hidden><span data-co-disc-label>Code</span><span data-co-disc style="color:#8A4A1F;font-weight:700"></span></div>
 <div><span>Delivery</span><span data-co-del>₹80</span></div>
-<div class="muted"><span>You save on MRP</span><span data-co-save>₹69</span></div>
-<div class="total"><span>Total</span><span data-co-total>₹260</span></div>
+<div class="muted"><span>You save</span><span data-co-save>₹30</span></div>
+<div class="total"><span>Total</span><span data-co-total>₹299</span></div>
 </div>
+<form class="coupon mt-16" id="coupon-form" novalidate>
+<div data-coupon-entry>
+<label for="f-coupon" class="coupon-label">Have a creator code?</label>
+<div class="coupon-row"><input id="f-coupon" name="coupon" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="24" placeholder="Enter code"><button type="submit" class="btn btn-dark">Apply</button></div>
+</div>
+<div class="coupon-applied" data-coupon-applied hidden><span>Code <b data-coupon-code></b> applied: <span data-coupon-per></span> off every jar</span><button type="button" data-coupon-remove>Remove</button></div>
+<p class="coupon-msg" data-coupon-msg role="status" aria-live="polite"></p>
+</form>
 </div>
 <div class="empty-cart card" id="co-empty" hidden><p>Your cart is empty.</p><a class="btn btn-dark" href="/chocolate-chip-protein-cookies/">Shop the jar</a></div>
 </aside>

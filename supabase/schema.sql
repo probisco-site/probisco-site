@@ -88,3 +88,75 @@ create or replace view public.daily_sales with (security_invoker = true) as
   group by 1 order by 1 desc;
 
 revoke all on public.orders_to_ship, public.daily_sales from anon, authenticated;
+
+-- ============================================================
+-- Creator codes, sales tracking and Shiprocket (added Nov 2026)
+-- ============================================================
+create table if not exists public.coupons (
+  code             text primary key check (code ~ '^[A-Z0-9_-]{3,24}$'),
+  owner_name       text not null,              -- influencer or campaign name
+  owner_contact    text,
+  discount_per_jar int  not null default 20 check (discount_per_jar between 0 and 200),
+  active           boolean not null default true,
+  expires_at       timestamptz,
+  notes            text,
+  created_at       timestamptz not null default now()
+);
+
+alter table public.orders
+  add column if not exists coupon_code    text references public.coupons(code) on update cascade,
+  add column if not exists discount       int  not null default 0,
+  add column if not exists utm_source     text,
+  add column if not exists utm_medium     text,
+  add column if not exists utm_campaign   text,
+  add column if not exists shiprocket_order_id    text,
+  add column if not exists shiprocket_shipment_id text,
+  add column if not exists shiprocket_error       text,
+  add column if not exists courier_status text;
+
+create index if not exists orders_coupon_idx on public.orders (coupon_code);
+create index if not exists orders_awb_idx on public.orders (awb);
+
+create table if not exists public.courier_events (
+  id          bigint generated always as identity primary key,
+  received_at timestamptz not null default now(),
+  order_number text,
+  awb         text,
+  status      text,
+  payload     jsonb
+);
+
+create table if not exists public.app_settings (
+  key        text primary key,
+  value      text,
+  updated_at timestamptz not null default now()
+);
+
+alter table public.coupons        enable row level security;
+alter table public.courier_events enable row level security;
+alter table public.app_settings   enable row level security;
+revoke all on public.coupons, public.courier_events, public.app_settings from anon, authenticated;
+
+create or replace view public.coupon_sales with (security_invoker = true) as
+  select c.code, c.owner_name, c.active,
+         count(o.id)                       as orders,
+         coalesce(sum(o.quantity), 0)      as jars,
+         coalesce(sum(o.total), 0)         as revenue,
+         coalesce(sum(o.discount), 0)      as discount_given,
+         max(o.paid_at)                    as last_order_at
+  from public.coupons c
+  left join public.orders o
+    on o.coupon_code = c.code and o.status in ('paid','packed','shipped','delivered')
+  group by c.code, c.owner_name, c.active
+  order by revenue desc;
+
+create or replace view public.sales_by_source with (security_invoker = true) as
+  select case when coupon_code is not null then 'coupon: ' || coupon_code
+              when utm_source is not null then 'ad/link: ' || utm_source || coalesce(' / ' || utm_campaign, '')
+              else 'website (direct)' end as source,
+         count(*) as orders, sum(quantity) as jars, sum(total) as revenue
+  from public.orders
+  where status in ('paid','packed','shipped','delivered')
+  group by 1 order by revenue desc;
+
+revoke all on public.coupon_sales, public.sales_by_source from anon, authenticated;
