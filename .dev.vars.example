@@ -31,3 +31,7 @@ SHIPROCKET_PICKUP_LOCATION=Primary
 SHIPROCKET_WEBHOOK_TOKEN=any-long-random-text
 # SHIPROCKET_WEIGHT_PER_JAR_KG=0.3
 # SHIPROCKET_BOX_CM=20x15x15
+
+# ProBisCo HQ (optional: paid orders are copied into the HQ app)
+HQ_SUPABASE_SECRET_KEY=
+# HQ_SUPABASE_URL=https://gqgtxkcdiwecsmwrvmcq.supabase.co

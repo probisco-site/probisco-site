@@ -121,6 +121,18 @@ Setup:
 
 WhatsApp-mode orders (placed while online payment is off) are not sent to Shiprocket, because they aren't paid yet. Add them in Shiprocket once the customer has paid, using the same order number, and set `status` to `paid` in Supabase.
 
+## ProBisCo HQ (orders appear in the HQ app)
+
+Every paid website order is copied into ProBisCo HQ automatically, under **Orders**, as an **Online** order with the website's order number (e.g. `PB261117-1150`). The customer, delivery address, coupon, delivery charge and Razorpay payment come with it, and the customer is added to HQ's customers with the tag `website`.
+
+When Shiprocket reports the parcel as shipped, HQ marks the order delivered (sent out) and takes the jars out of **Office stock**. The courier, tracking number and link are added to the order's notes. If HQ doesn't have enough stock recorded, the order still goes through and the note says stock wasn't deducted.
+
+Setup (one secret):
+1. In Supabase, open the **ProBisCo HQ** project (not the website one) → **Project Settings → API Keys**. Under **Secret keys**, create a key named `probisco-website` and copy it.
+2. In Cloudflare Pages → **Settings → Variables and Secrets**, add it as the secret `HQ_SUPABASE_SECRET_KEY`. Retry the latest deployment.
+
+If an order couldn't reach HQ (`hq_error` in the website's orders table says why), it is retried automatically with the next order.
+
 ## Coupon codes and sales tracking
 
 Each person or partner you give a code to gets their own code. It takes ₹20 off every jar (₹199 instead of ₹219).

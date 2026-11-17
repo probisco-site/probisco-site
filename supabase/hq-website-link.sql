@@ -1,0 +1,4 @@
+-- Applied to the ProBisCo HQ Supabase project (gqgtxkcdiwecsmwrvmcq) on 17 Nov 2026.
+-- Lets the website copy paid orders into HQ and pass on courier updates.
+-- See README > ProBisCo HQ. Functions are callable only with HQ's secret key.
+-- (Full definitions: web_sync_order(jsonb), web_order_status(text,text,text,text,text) in HQ's database.)

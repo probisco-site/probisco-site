@@ -160,3 +160,9 @@ create or replace view public.sales_by_source with (security_invoker = true) as
   group by 1 order by revenue desc;
 
 revoke all on public.coupon_sales, public.sales_by_source from anon, authenticated;
+
+-- ProBisCo HQ sync status (added Nov 2026)
+alter table public.orders
+  add column if not exists hq_synced boolean not null default false,
+  add column if not exists hq_error text;
+create index if not exists orders_hq_pending_idx on public.orders (paid_at) where hq_synced = false;

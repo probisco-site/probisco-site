@@ -6,6 +6,7 @@ import { sb, eq } from '../../lib/supabase.js';
 import { safeEqual } from '../../lib/crypto.js';
 import { mapCourierStatus } from '../../lib/shiprocket.js';
 import { notifyShipped, notifyDelivered } from '../../lib/notify.js';
+import { hqOrderStatus } from '../../lib/hq.js';
 
 const RANK = { pending: -1, paid: 0, packed: 1, shipped: 2, delivered: 3 };
 
@@ -53,6 +54,7 @@ export async function onRequestPost({ request, env }) {
 
     if (moveForward && next === 'shipped') await notifyShipped(env, updated).catch((e) => console.error(e));
     if (moveForward && next === 'delivered') await notifyDelivered(env, updated).catch((e) => console.error(e));
+    if (moveForward && (next === 'shipped' || next === 'delivered')) await hqOrderStatus(env, updated, next);
     return json({ ok: true, matched: true, status: updated.status });
   } catch (e) {
     console.error('courier-update', e);
