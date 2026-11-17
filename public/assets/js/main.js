@@ -219,8 +219,17 @@
     var bar = document.querySelector('.sticky-bar');
     if (!bar) return;
     document.body.classList.add('has-sticky');
-    var onScroll = function () { bar.classList.toggle('show', window.scrollY > 520); };
+    var builder = document.querySelector('[data-builder]');
+    // Show the bar once the visitor has scrolled past the top, but not while the buy box itself is on screen.
+    var onScroll = function () {
+      var inView = false;
+      if (builder) { var r = builder.getBoundingClientRect(); inView = r.top < window.innerHeight && r.bottom > 0; }
+      var show = window.scrollY > 480 && !inView;
+      bar.classList.toggle('show', show);
+      document.body.classList.toggle('sticky-on', show);
+    };
     window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
     onScroll();
   }
 
@@ -263,16 +272,20 @@
 
   // ---- Product gallery ----
   function initGallery() {
-    var main = document.querySelector('[data-gallery-main]');
-    if (!main) return;
-    document.querySelectorAll('[data-gallery-thumb]').forEach(function (b) {
-      b.addEventListener('click', function () {
-        main.src = b.getAttribute('data-src');
-        main.alt = b.getAttribute('data-alt');
-        document.querySelectorAll('[data-gallery-thumb]').forEach(function (x) { x.setAttribute('aria-current', String(x === b)); });
-      });
+    var track = document.querySelector('[data-gallery-track]');
+    if (!track) return;
+    var thumbs = Array.prototype.slice.call(document.querySelectorAll('[data-gallery-thumb]'));
+    function mark(i) { thumbs.forEach(function (t, j) { t.setAttribute('aria-current', String(i === j)); }); }
+    thumbs.forEach(function (t, i) {
+      t.addEventListener('click', function () { track.scrollTo({ left: i * track.clientWidth, behavior: 'smooth' }); mark(i); });
     });
+    var timer;
+    track.addEventListener('scroll', function () {
+      clearTimeout(timer);
+      timer = setTimeout(function () { mark(Math.round(track.scrollLeft / track.clientWidth)); }, 60);
+    }, { passive: true });
   }
+
 
   document.addEventListener('DOMContentLoaded', function () {
     showCouponNote();
