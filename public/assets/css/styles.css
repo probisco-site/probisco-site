@@ -418,7 +418,7 @@ body.has-sticky { padding-bottom: 76px; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
 @media (max-width: 400px) { .hide-xs { display: none; } .cart-btn { padding: 0 12px; } }
 
-/* Creator code box (checkout) */
+/* Coupon code box (checkout) */
 .coupon { border-top: 1px dashed var(--sand-line); padding-top: 14px; }
 .coupon-label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 6px; }
 .coupon-row { display: flex; gap: 8px; }

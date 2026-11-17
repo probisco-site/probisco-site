@@ -26,7 +26,7 @@
   };
   PB.rs = rs;
 
-  // ---- Creator codes and campaign tags ----
+  // ---- Coupon codes and campaign tags ----
   // A code arrives by link (probisco.in/?code=NAME20) or is typed at checkout. It is kept
   // for 30 days on this device. The server re-checks it on every order.
   var CKEY = 'pb_coupon', UKEY = 'pb_utm', TTL = 30 * 864e5;
@@ -193,7 +193,7 @@
       document.querySelectorAll('[data-sticky-total]').forEach(function (el) { el.textContent = rs(p.total); });
       document.querySelectorAll('[data-sticky-note]').forEach(function (el) { el.textContent = p.delivery ? 'incl. ' + rs(p.delivery) + ' delivery' : 'free delivery'; });
     }
-    document.addEventListener('pb:cart', render); // e.g. a creator code was applied
+    document.addEventListener('pb:cart', render); // e.g. a coupon code was applied
     root.addEventListener('click', function (e) {
       if (e.target.closest('[data-dec]')) { qty = Math.max(1, qty - 1); render(); }
       else if (e.target.closest('[data-inc]')) { qty = Math.min(C.max, qty + 1); render(); }

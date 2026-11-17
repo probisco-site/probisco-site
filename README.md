@@ -6,9 +6,11 @@ This folder is the complete ProBisCo store for **probisco.in**:
 - **Backend** (`functions/api/` and `lib/`): small server functions that run on Cloudflare. They price the order (the browser can't change the price), take payment through Razorpay, save the order in Supabase, and send you an alert.
 - **Database** (`supabase/schema.sql`): the order and newsletter tables.
 
+After changing any file in `public/assets/css` or `public/assets/js`, run `python3 scripts/bump-assets.py` so visitors' browsers load the new version (these files are cached for a year).
+
 Prices live in two places. Change both if prices change:
 `lib/shop.js` (what customers are charged) and `public/assets/js/main.js` (what the site displays).
-Today: ₹219 a jar (MRP ₹249), ₹20 off per jar with a creator code (₹199), ₹80 delivery on 1 to 3 jars, free from 4 jars, maximum 24 jars per order.
+Today: ₹219 a jar (MRP ₹249), ₹20 off per jar with a coupon code (₹199), ₹80 delivery on 1 to 3 jars, free from 4 jars, maximum 24 jars per order.
 
 ---
 
@@ -119,9 +121,9 @@ Setup:
 
 WhatsApp-mode orders (placed while online payment is off) are not sent to Shiprocket, because they aren't paid yet. Add them in Shiprocket once the customer has paid, using the same order number, and set `status` to `paid` in Supabase.
 
-## Creator codes and sales tracking
+## Coupon codes and sales tracking
 
-Each influencer gets their own code. It takes ₹20 off every jar (₹199 instead of ₹219).
+Each person or partner you give a code to gets their own code. It takes ₹20 off every jar (₹199 instead of ₹219).
 
 **Add a code:** Supabase > Table Editor > `coupons` > Insert row. Fill in `code` (capitals, numbers, `-` or `_`, 3 to 24 characters, e.g. `RIYA20`) and `owner_name`. `discount_per_jar` defaults to 20. Optional: `expires_at`, `owner_contact`, `notes`.
 

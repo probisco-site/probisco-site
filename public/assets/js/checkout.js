@@ -59,7 +59,7 @@
   });
   document.addEventListener('pb:cart', render);
 
-  // Creator code
+  // Coupon code
   var cForm = document.getElementById('coupon-form');
   var cMsg = $('[data-coupon-msg]');
   cForm.addEventListener('submit', function (e) {
