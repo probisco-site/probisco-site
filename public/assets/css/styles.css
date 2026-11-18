@@ -498,3 +498,46 @@ body.has-sticky { padding-bottom: 76px; }
 .prose table { display: block; overflow-x: auto; }
 @media (min-width: 640px) { .prose table { display: table; } }
 .summary .eyebrow { color: var(--honey); }
+
+/* Hero underline swash */
+.swash { position: relative; display: inline-block; }
+.swash::after { content: ""; position: absolute; left: -2%; right: -4%; bottom: -0.12em; height: 0.28em; background: no-repeat center / 100% 100% url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 20' preserveAspectRatio='none'%3E%3Cpath d='M3 14 C 50 4, 120 3, 197 9' fill='none' stroke='%23E2A23B' stroke-width='7' stroke-linecap='round'/%3E%3C/svg%3E"); z-index: -1; }
+.hero h1 .swash { z-index: 0; }
+/* Feature strip (light) */
+.feature-band { background: var(--ivory); color: var(--ink); border-top: 1px solid var(--sand-line); border-bottom: 1px solid var(--sand-line); }
+.feature-band .stat svg { color: var(--caramel); flex: none; }
+.feature-band .stat .num { font-family: inherit; font-size: 15px; font-weight: 700; white-space: normal; line-height: 1.25; }
+.feature-band .stat .lbl { color: var(--ink-soft); font-size: 12.5px; }
+.feature-band .stats-grid .stat { border-color: var(--sand-line) !important; }
+/* Ingredients: +3 more, facts */
+.ing-more { text-decoration: none; color: var(--ink); justify-content: center; align-items: center; background: var(--sand); border-style: dashed; min-height: 120px; }
+.ing-more .plus { font-family: var(--display); font-size: 40px; line-height: 1; color: var(--caramel); }
+.ing-more span:not(.plus) { font-weight: 700; font-size: 15px; }
+.ing-more small { font-size: 12.5px; color: var(--ink-soft); }
+@media (max-width: 759px) { .ing-grid .ing-more { grid-column: 1 / -1; min-height: 0; padding: 16px; } }
+@media (min-width: 760px) { .ing-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+.ing-facts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.pill { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; border-radius: 999px; padding: 6px 14px; background: var(--white); border: 1px solid var(--tan); }
+.pill-no::before { content: "×"; font-weight: 800; color: #8C1D18; }
+/* Pack picks show live prices */
+.pick .tag-best { font-size: 10.5px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; background: var(--honey); color: var(--choc-deep); border-radius: 6px; padding: 1px 6px; align-self: flex-start; }
+.pick[aria-pressed="true"] .tag-best { background: var(--honey); }
+/* Pincode result box */
+.pin-msg.ok { background: #E7F4EA; border: 1px solid #B5DBBE; border-radius: 12px; padding: 10px 12px; }
+.pin-msg.ok::before { content: "✓ "; font-weight: 800; }
+/* Product page rating summary (real reviews only) */
+.rating-sum { display: inline-flex; gap: 8px; align-items: center; font-size: 14px; font-weight: 600; color: var(--ink-soft); text-decoration: none; }
+.rating-sum .st { color: #C27A16; letter-spacing: 2px; }
+/* Checkout steps */
+.co-steps { list-style: none; display: flex; gap: 8px; padding: 18px 0 0; margin: 0; font-size: 13px; font-weight: 700; color: var(--ink-muted); counter-reset: st; }
+.co-steps li { counter-increment: st; display: flex; align-items: center; gap: 8px; }
+.co-steps li::before { content: counter(st); width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--tan); display: grid; place-items: center; font-size: 12px; }
+.co-steps li + li::after { content: none; }
+.co-steps li:not(:last-child)::after { content: ""; width: 28px; height: 1.5px; background: var(--tan); margin-left: 4px; }
+.co-steps .done { color: var(--ink-soft); }
+.co-steps .done::before { content: "✓"; background: var(--sand); }
+.co-steps .current { color: var(--ink); }
+.co-steps .current::before { background: var(--choc); border-color: var(--choc); color: var(--on-dark); }
+/* Review cards: initial avatar */
+.review-card .who { display: flex; align-items: center; gap: 10px; }
+.review-card .av { width: 32px; height: 32px; border-radius: 50%; background: var(--caramel); color: var(--on-dark); display: grid; place-items: center; font-weight: 800; font-size: 14px; flex: none; }

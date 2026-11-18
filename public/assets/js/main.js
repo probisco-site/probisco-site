@@ -183,7 +183,11 @@
       q('[data-qty-u]').forEach(function (el) { el.textContent = jarWord(qty); });
       q('[data-dec]').forEach(function (b) { b.disabled = qty <= 1; });
       q('[data-inc]').forEach(function (b) { b.disabled = qty >= C.max; });
-      q('.pick').forEach(function (b) { b.setAttribute('aria-pressed', String(parseInt(b.getAttribute('data-pick'), 10) === qty)); });
+      q('.pick').forEach(function (b) {
+        var n = parseInt(b.getAttribute('data-pick'), 10), pp = PB.price(n), sm = b.querySelector('small');
+        b.setAttribute('aria-pressed', String(n === qty));
+        if (sm) sm.textContent = rs(pp.subtotal - pp.discount) + (pp.delivery ? ' + ' + rs(pp.delivery) + ' delivery' : ' · free delivery');
+      });
       q('[data-hint]').forEach(function (el) { el.textContent = shipHint(qty); });
       q('[data-bar]').forEach(function (el) { el.style.width = Math.min(100, qty / C.freeFrom * 100) + '%'; });
       set('cookies', p.cookies); set('protein', p.protein); set('qtyline', qty + ' × ' + rs(C.price));
@@ -243,7 +247,10 @@
         var st = document.createElement('div'); st.className = 'st'; st.textContent = stars(r.rating); st.setAttribute('aria-label', r.rating + ' out of 5');
         c.appendChild(st);
         if (r.text) { var p = document.createElement('p'); p.textContent = '“' + r.text + '”'; c.appendChild(p); }
-        var who = document.createElement('figcaption'); who.className = 'who'; who.textContent = r.name + (r.city ? ', ' + r.city : '');
+        var who = document.createElement('figcaption'); who.className = 'who';
+        var av = document.createElement('span'); av.className = 'av'; av.setAttribute('aria-hidden', 'true'); av.textContent = (r.name || '?').charAt(0).toUpperCase();
+        var nm = document.createElement('span'); nm.textContent = r.name + (r.city ? ', ' + r.city : '');
+        who.appendChild(av); who.appendChild(nm);
         c.appendChild(who);
         if (r.verified || r.inPerson) { var t = document.createElement('span'); t.className = 'tag'; t.textContent = r.verified ? 'Verified buyer' : 'Tried it at our stall'; c.appendChild(t); }
         grid.appendChild(c);
@@ -328,6 +335,12 @@
     showCouponNote();
     document.querySelectorAll('[data-pin-check]').forEach(initPinCheck);
     document.querySelectorAll('[data-reviews]').forEach(initReviews);
+    var rsum = document.querySelector('[data-rating-sum]');
+    if (rsum) fetch('/api/reviews').then(function (r) { return r.json(); }).then(function (j) {
+      if (!j || j.count < 3) return;
+      rsum.innerHTML = '<span class="st" aria-hidden="true">' + '★★★★★'.slice(0, Math.round(j.average)) + '☆☆☆☆☆'.slice(0, 5 - Math.round(j.average)) + '</span><span>' + j.average.toFixed(1) + ' out of 5 · ' + j.count + ' reviews</span>';
+      rsum.hidden = false;
+    }).catch(function () {});
     buildDrawer();
     renderCartBits();
     document.querySelectorAll('[data-open-cart]').forEach(function (b) { b.addEventListener('click', openDrawer); });
