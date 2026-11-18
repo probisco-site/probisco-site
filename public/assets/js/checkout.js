@@ -89,6 +89,7 @@
   });
   form.elements.phone.addEventListener('input', function () { this.value = this.value.replace(/\D/g, '').slice(0, 10); });
   form.elements.pincode.addEventListener('input', function () { this.value = this.value.replace(/\D/g, '').slice(0, 6); });
+  try { var pinSaved = localStorage.getItem('pb_pin'); if (pinSaved && !form.elements.pincode.value) form.elements.pincode.value = pinSaved; } catch (e) {}
 
   function showError(msg) {
     errBox.innerHTML = '';

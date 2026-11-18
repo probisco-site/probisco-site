@@ -29,6 +29,7 @@
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 body { margin: 0; font-family: var(--font); color: var(--ink); background: var(--cream); line-height: 1.6; font-size: 16px; }
 img { max-width: 100%; display: block; }
+[hidden] { display: none !important; }
 a { color: var(--ink); }
 a:hover { color: var(--caramel-text); }
 h1, h2, h3 { margin: 0; line-height: 1.08; letter-spacing: -0.02em; font-weight: 800; }
@@ -432,3 +433,68 @@ body.has-sticky { padding-bottom: 76px; }
 .coupon-msg { font-size: 13px; margin: 6px 0 0; color: #8C1D18; min-height: 0; }
 .coupon-msg:empty { display: none; }
 .sum-rows > div[hidden], .coupon-applied[hidden], [data-coupon-entry][hidden] { display: none; }
+
+/* Coupon link in the top bar */
+.announce a { color: inherit; font-weight: 800; letter-spacing: .04em; text-decoration: underline; text-underline-offset: 3px; }
+/* Hero: three key numbers */
+.mini-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 520px; }
+@media (max-width: 420px) { .mini-stat { flex-direction: column; align-items: flex-start; gap: 6px; padding: 10px 12px; } .mini-stat svg { display: none; } .mini-stat .num { font-size: 28px; } }
+/* Per-cookie nutrition at a glance */
+.nutri-tiles { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; margin: 4px 0 10px; }
+.nutri-tiles > div { background: var(--ivory); border: 1.5px solid var(--tan); border-radius: 14px; padding: 10px 6px; text-align: center; display: flex; flex-direction: column; gap: 2px; }
+.nutri-tiles b { font-family: var(--display); font-size: 20px; line-height: 1.1; }
+.nutri-tiles span { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-soft); }
+@media (max-width: 520px) { .nutri-tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.acc-body .nutri-tiles { margin-top: 0; }
+/* Buy now under Add to cart */
+[data-buy-now] { margin-top: 10px; }
+
+/* Pincode check */
+.pin-check { display: flex; flex-direction: column; gap: 6px; border-top: 1px solid var(--sand-line); padding-top: 14px; }
+.pin-check label { font-size: 14px; font-weight: 700; }
+.pin-row { display: flex; gap: 8px; }
+.pin-row input { flex: 1 1 auto; min-width: 0; height: 46px; padding: 0 14px; border-radius: 12px; border: 1.5px solid var(--tan); background: var(--white); font-size: 16px; letter-spacing: .08em; }
+.pin-row input:focus { border-color: var(--choc); outline: none; box-shadow: 0 0 0 3px rgba(173,99,47,.25); }
+.pin-row .btn { height: 46px; padding: 0 18px; flex: none; }
+.pin-msg { font-size: 14px; margin: 0; }
+.pin-msg:empty { display: none; }
+.pin-msg.ok { color: #1E5631; }
+.pin-msg.no { color: #8C1D18; }
+
+/* Review form */
+.wrap.narrow { max-width: 760px; }
+.review-form { display: flex; flex-direction: column; gap: 18px; padding: 24px; }
+.rate { border: 0; padding: 0; margin: 0; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.rate legend { float: left; font-weight: 700; font-size: 16px; padding: 0; }
+.stars { display: inline-flex; flex-direction: row-reverse; gap: 4px; }
+.stars input { position: absolute; opacity: 0; pointer-events: none; }
+.stars label { width: 38px; height: 38px; cursor: pointer; background: no-repeat center / 34px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23C9A27E' stroke-width='1.6' stroke-linejoin='round'%3E%3Cpath d='M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z'/%3E%3C/svg%3E"); }
+.stars input:checked ~ label, .stars label:hover, .stars label:hover ~ label { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23E2A23B' stroke='%23B9761C' stroke-width='1.2' stroke-linejoin='round'%3E%3Cpath d='M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z'/%3E%3C/svg%3E"); }
+.stars input:focus-visible + label { outline: 3px solid var(--caramel); outline-offset: 2px; border-radius: 8px; }
+.check-row { grid-column: 1 / -1; display: flex; gap: 10px; align-items: flex-start; font-size: 14px; }
+.check-row input { width: 20px; height: 20px; margin-top: 2px; flex: none; }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.form-err { color: #8C1D18; font-size: 14px; margin: 0; }
+.form-err:empty { display: none; }
+.review-thanks { padding: 24px; display: flex; flex-direction: column; gap: 10px; }
+
+/* Reviews on the homepage */
+.reviews-wrap { display: flex; flex-direction: column; gap: 22px; }
+.reviews-avg { display: flex; align-items: center; gap: 10px; font-weight: 600; color: var(--on-dark-soft); }
+.reviews-avg b { font-family: var(--display); font-size: 30px; color: var(--on-dark); }
+.review-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+.review-card { background: var(--ivory); color: var(--ink); border-radius: 20px; padding: 18px; display: flex; flex-direction: column; gap: 8px; }
+.review-card .st { color: #C27A16; letter-spacing: 2px; font-size: 16px; }
+.review-card p { margin: 0; font-size: 15px; }
+.review-card .who { font-size: 13px; color: var(--ink-soft); margin-top: auto; }
+.review-card .tag { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: #1E5631; }
+
+/* Learn section */
+.learn-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; padding: 8px 0 72px; }
+.learn-card { text-decoration: none; display: flex; flex-direction: column; gap: 8px; color: var(--ink); }
+.learn-card b { font-size: 18px; line-height: 1.3; }
+.learn-card .learn-more { font-weight: 700; color: var(--caramel-text, #8A4A1F); margin-top: auto; }
+.learn-card:hover { border-color: var(--choc); }
+.prose table { display: block; overflow-x: auto; }
+@media (min-width: 640px) { .prose table { display: table; } }
+.summary .eyebrow { color: var(--honey); }

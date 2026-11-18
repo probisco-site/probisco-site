@@ -133,6 +133,16 @@ Setup (one secret):
 
 If an order couldn't reach HQ (`hq_error` in the website's orders table says why), it is retried automatically with the next order.
 
+## Reviews
+
+Customers rate their cookies at **probisco.in/review/** (the delivered email links there with their order number filled in). Each review arrives by email and waits in Supabase → `reviews` with status `pending`. To show one on the homepage, set `status` to `approved`. Reviews matched to a paid order (order number + phone) show "Verified buyer".
+
+Reviews from people who tried ProBisCo in person (for example at a stall) can be added by hand: insert a row with their real name, city, rating and words, `source` = `in_person`, `consent` = true (only with their permission) and `status` = `approved`. They show as "Tried it at our stall". Only add real reviews from real people.
+
+## Learn articles
+
+The articles under `/learn/` are written in `scripts/build-learn.py`. Edit them there, then run `python3 scripts/build-learn.py && python3 scripts/bump-assets.py`.
+
 ## Coupon codes and sales tracking
 
 Each person or partner you give a code to gets their own code. It takes ₹20 off every jar (₹199 instead of ₹219).

@@ -110,6 +110,7 @@
     drawer.setAttribute('aria-modal', 'true');
     drawer.setAttribute('aria-labelledby', 'drawer-title');
     drawer.setAttribute('aria-hidden', 'true');
+    drawer.inert = true;
     drawer.innerHTML =
       '<div class="drawer-head"><h2 id="drawer-title">Your cart</h2>' +
       '<button class="icon-btn" type="button" data-drawer-close aria-label="Close cart">' + ICON.close + '</button></div>' +
@@ -160,11 +161,13 @@
     lastFocus = document.activeElement;
     document.body.classList.add('drawer-open');
     drawer.setAttribute('aria-hidden', 'false');
+    drawer.inert = false;
     setTimeout(function () { drawer.querySelector('[data-drawer-close]').focus(); }, 50);
   }
   function closeDrawer() {
     document.body.classList.remove('drawer-open');
     drawer.setAttribute('aria-hidden', 'true');
+    drawer.inert = true;
     if (lastFocus && lastFocus.focus) lastFocus.focus();
   }
   PB.openDrawer = openDrawer;
@@ -199,12 +202,59 @@
       else if (e.target.closest('[data-inc]')) { qty = Math.min(C.max, qty + 1); render(); }
       else if (e.target.closest('.pick')) { qty = clamp(e.target.closest('.pick').getAttribute('data-pick')); render(); }
       else if (e.target.closest('[data-add]')) { addToCart(qty); }
+      else if (e.target.closest('[data-buy-now]')) { PB.setCart(qty); location.href = '/checkout/'; }
     });
     document.querySelectorAll('[data-sticky-add]').forEach(function (b) {
       b.addEventListener('click', function () { addToCart(qty); });
     });
     render();
   }
+  // ---- Delivery check by pincode ----
+  function initPinCheck(form) {
+    var input = form.querySelector('input'), msg = form.querySelector('[data-pin-msg]'), btn = form.querySelector('button');
+    try { var saved = localStorage.getItem('pb_pin'); if (saved) input.value = saved; } catch (e) {}
+    input.addEventListener('input', function () { input.value = input.value.replace(/\D/g, '').slice(0, 6); });
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var pin = input.value.trim();
+      msg.className = 'pin-msg';
+      if (!/^[1-9]\d{5}$/.test(pin)) { msg.textContent = 'Enter a valid 6-digit pincode.'; msg.classList.add('no'); return; }
+      btn.disabled = true; msg.textContent = 'Checking…';
+      fetch('/api/delivery-check?pincode=' + pin)
+        .then(function (r) { return r.json(); })
+        .then(function (j) {
+          msg.textContent = j.message || j.error || 'We deliver across India.';
+          if (j.available === true) msg.classList.add('ok'); else if (j.available === false || j.error) msg.classList.add('no');
+          try { if (j.available !== false && !j.error) localStorage.setItem('pb_pin', pin); } catch (e) {}
+        })
+        .catch(function () { msg.textContent = 'Couldn\'t check right now. We deliver across India.'; })
+        .finally(function () { btn.disabled = false; });
+    });
+  }
+
+  // ---- Approved customer reviews (homepage) ----
+  function initReviews(box) {
+    fetch('/api/reviews').then(function (r) { return r.json(); }).then(function (j) {
+      if (!j || !j.count) return;
+      var grid = box.querySelector('[data-reviews-grid]');
+      var stars = function (n) { return '★★★★★'.slice(0, n) + '☆☆☆☆☆'.slice(0, 5 - n); };
+      j.reviews.slice(0, 6).forEach(function (r) {
+        var c = document.createElement('figure'); c.className = 'review-card';
+        var st = document.createElement('div'); st.className = 'st'; st.textContent = stars(r.rating); st.setAttribute('aria-label', r.rating + ' out of 5');
+        c.appendChild(st);
+        if (r.text) { var p = document.createElement('p'); p.textContent = '“' + r.text + '”'; c.appendChild(p); }
+        var who = document.createElement('figcaption'); who.className = 'who'; who.textContent = r.name + (r.city ? ', ' + r.city : '');
+        c.appendChild(who);
+        if (r.verified || r.inPerson) { var t = document.createElement('span'); t.className = 'tag'; t.textContent = r.verified ? 'Verified buyer' : 'Tried it at our stall'; c.appendChild(t); }
+        grid.appendChild(c);
+      });
+      if (j.count >= 3) box.querySelector('[data-reviews-avg]').innerHTML = '<b>' + j.average.toFixed(1) + '</b><span>out of 5 from ' + j.count + ' reviews</span>';
+      var title = document.querySelector('[data-reviews-title]'); if (title) title.textContent = 'What people say about the crunch.';
+      var lead = document.querySelector('[data-reviews-lead]'); if (lead) lead.textContent = 'Tried it too? Add your review.';
+      box.hidden = false;
+    }).catch(function () {});
+  }
+
   function addToCart(n) {
     var before = PB.getCart();
     PB.setCart(Math.min(C.max, before + n));
@@ -276,6 +326,8 @@
 
   document.addEventListener('DOMContentLoaded', function () {
     showCouponNote();
+    document.querySelectorAll('[data-pin-check]').forEach(initPinCheck);
+    document.querySelectorAll('[data-reviews]').forEach(initReviews);
     buildDrawer();
     renderCartBits();
     document.querySelectorAll('[data-open-cart]').forEach(function (b) { b.addEventListener('click', openDrawer); });
