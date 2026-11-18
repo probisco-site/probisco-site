@@ -53,11 +53,23 @@
     var code = q.get('code') || q.get('coupon');
     if (code) {
       PB.checkCoupon(code).then(function (c) { PB.setCoupon(c); PB._couponNote = c.code; showCouponNote(); }).catch(function () {});
+    } else {
+      // Re-check a code remembered from an earlier visit; drop it if it has been switched off.
+      var saved = PB.getCoupon();
+      if (saved) PB.checkCoupon(saved.code).catch(function (e) {
+        if (/valid|expired/i.test(e.message || '')) { PB.setCoupon(null); restoreAnnounce(); }
+      });
     }
   })();
+  var announceDefault = null;
+  function restoreAnnounce() {
+    var span = document.querySelector('.announce span');
+    if (span && announceDefault !== null) span.innerHTML = announceDefault;
+  }
   function showCouponNote() {
     var c = PB.getCoupon(); if (!c || !document.body) return;
     var span = document.querySelector('.announce span');
+    if (span && announceDefault === null) announceDefault = span.innerHTML;
     if (span) span.textContent = 'Code ' + c.code + ' applied: ' + rs(C.price - c.perJar) + ' a jar';
   }
 
