@@ -179,7 +179,7 @@ for a in ARTICLES:
 </main>'''
     ld = [{'@context': 'https://schema.org', '@type': 'Article', 'headline': a['title'], 'description': a['desc'],
            'datePublished': DATE, 'dateModified': DATE, 'mainEntityOfPage': SITE + path,
-           'image': SITE + '/assets/img/og-image.jpg',
+           'image': SITE + '/assets/img/og-image-v2.jpg',
            'author': {'@type': 'Organization', 'name': 'ProBisCo', 'url': SITE + '/'},
            'publisher': {'@type': 'Organization', 'name': 'ProBisCo', 'logo': {'@type': 'ImageObject', 'url': SITE + '/assets/img/icon-512.png'}}},
           crumbs_ld([('Home', '/'), ('Learn', '/learn/'), (a['short'], path)])]

@@ -140,7 +140,7 @@
       return;
     }
     body.innerHTML =
-      '<div class="cart-line"><img src="/assets/img/jar-thumb.webp" alt="" width="76" height="76">' +
+      '<div class="cart-line"><img src="/assets/img/jar-thumb-v2.webp" alt="" width="76" height="76">' +
       '<div style="flex:1 1 auto;min-width:0"><b>Chocolate chip protein cookies</b><div class="muted" style="font-size:13px">6 cookies · 30g protein per jar · ' + rs(C.price) + ' each</div>' +
       '<button type="button" data-cart-remove style="background:none;border:0;padding:6px 0;color:#8A4A1F;font-weight:600;cursor:pointer;font-size:13px">Remove</button></div></div>' +
       '<div class="stepper" style="justify-content:center">' +
